@@ -1,7 +1,10 @@
 import asyncio
-from typing import Awaitable, Callable, List, Optional, TypeVar
+from typing import Any, Awaitable, Callable, List, Optional, TypeVar
 
-import gradio as gr
+try:
+    import gradio as gr
+except ModuleNotFoundError:
+    gr = None  # type: ignore
 from tqdm.asyncio import tqdm as tqdm_async
 
 from graphgen.utils.log import logger
@@ -87,7 +90,7 @@ async def run_concurrent(
     *,
     desc: str = "processing",
     unit: str = "item",
-    progress_bar: Optional[gr.Progress] = None,
+    progress_bar: Optional[Any] = None,
 ) -> List[R]:
     tasks = [asyncio.create_task(coro_fn(it)) for it in items]
 

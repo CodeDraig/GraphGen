@@ -1,7 +1,16 @@
 import os
+import shutil
 from pathlib import Path
 
+import pytest
+
 from graphgen.models.reader.pdf_reader import MinerUParser
+
+
+pytestmark = pytest.mark.skipif(
+    shutil.which("mineru") is None,
+    reason="MinerU CLI not available; skip PDF parser integration tests.",
+)
 
 
 def test_check_bin():

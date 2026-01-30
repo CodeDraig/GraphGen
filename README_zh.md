@@ -96,10 +96,10 @@ GraphGen 首先根据源文本构建细粒度的知识图谱，然后利用期�
     git clone --depth=1 https://github.com/open-sciencelab/GraphGen
     cd GraphGen
     ```
-3. 创建新的 uv 环境
+3. 创建新的 uv 环境（支持 Python 3.10–3.13）
 
     ```bash
-    uv venv --python 3.10
+     uv venv --python 3.13
     ```
 4. 安装依赖
 
@@ -116,8 +116,28 @@ GraphGen 首先根据源文本构建细粒度的知识图谱，然后利用期�
    如果在开发过程中需要热重载，请运行
 
    ```bash
-    PYTHONPATH=. gradio webui/app.py
+   PYTHONPATH=. gradio webui/app.py
    ```
+
+### 运行 GraphGen Studio（FastAPI + React）
+
+1. 启动 FastAPI 后端（提供 `/api` 接口）：
+   ```bash
+   uvicorn graphgen.api.app:app --reload --port 8000
+   ```
+2. 在新的终端中启动 React 单页应用：
+   ```bash
+   cd webui_spa
+   npm install
+   npm run dev
+   ```
+   默认情况下 Vite 开发服务器会将 API 请求代理到 `http://localhost:8000/api`。
+
+3. 需要部署时编译前端产物：
+   ```bash
+   npm run build
+   ```
+   构建结果输出至 `webui_spa/dist`，可由 FastAPI 或任意静态资源服务托管。
 
 
 ![ui](https://github.com/user-attachments/assets/3024e9bc-5d45-45f8-a4e6-b57bd2350d84)
@@ -233,4 +253,3 @@ GraphGen 首先根据源文本构建细粒度的知识图谱，然后利用期�
 ## 📅 星标历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=open-sciencelab/GraphGen&type=Date)](https://www.star-history.com/#open-sciencelab/GraphGen&Date)
-

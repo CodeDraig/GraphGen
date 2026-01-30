@@ -96,10 +96,10 @@ For any questions, please check [FAQ](https://github.com/open-sciencelab/GraphGe
     cd GraphGen
     ```
 
-3. Create a new uv environment
+3. Create a new uv environment (Python 3.10–3.13 supported)
 
     ```bash
-     uv venv --python 3.10
+     uv venv --python 3.13
     ```
    
 4. Configure the dependencies
@@ -118,6 +118,26 @@ For any questions, please check [FAQ](https://github.com/open-sciencelab/GraphGe
    ```bash
    PYTHONPATH=. gradio webui/app.py
    ```
+
+### Run GraphGen Studio (FastAPI + React)
+
+1. Start the FastAPI backend (serves `/api` endpoints):
+   ```bash
+   uvicorn graphgen.api.app:app --reload --port 8000
+   ```
+2. In another terminal, launch the React single-page app:
+   ```bash
+   cd webui_spa
+   npm install
+   npm run dev
+   ```
+   By default the Vite dev server proxies API requests to `http://localhost:8000/api`.
+
+3. Build production assets when ready to deploy:
+   ```bash
+   npm run build
+   ```
+   The compiled bundle is emitted to `webui_spa/dist` and can be served by FastAPI or any static host.
 
 
 ![ui](https://github.com/user-attachments/assets/3024e9bc-5d45-45f8-a4e6-b57bd2350d84)

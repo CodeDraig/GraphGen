@@ -1,7 +1,7 @@
 import html
 import os
 from dataclasses import dataclass
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 import networkx as nx
 
@@ -31,15 +31,29 @@ class NetworkXStorage(BaseGraphStorage):
         """Refer to https://github.com/microsoft/graphrag/index/graph/utils/stable_lcc.py
         Return the largest connected component of the graph, with nodes and edges sorted in a stable way.
         """
-        from graspologic.utils import largest_connected_component
-
         graph = graph.copy()
-        graph = cast(nx.Graph, largest_connected_component(graph))
+        graph = NetworkXStorage._largest_connected_component(graph)
         node_mapping = {
             node: html.unescape(node.upper().strip()) for node in graph.nodes()
         }  # type: ignore
         graph = nx.relabel_nodes(graph, node_mapping)
         return NetworkXStorage._stabilize_graph(graph)
+
+    @staticmethod
+    def _largest_connected_component(graph: nx.Graph) -> nx.Graph:
+        """Return the largest connected component subgraph, respecting direction."""
+        if graph.number_of_nodes() == 0:
+            return graph.__class__()
+
+        if graph.is_directed():
+            components = nx.strongly_connected_components(graph)
+        else:
+            components = nx.connected_components(graph)
+
+        largest_nodes = max(components, key=len, default=None)
+        if not largest_nodes:
+            return graph.__class__()
+        return graph.subgraph(largest_nodes).copy()
 
     @staticmethod
     def _stabilize_graph(graph: nx.Graph) -> nx.Graph:

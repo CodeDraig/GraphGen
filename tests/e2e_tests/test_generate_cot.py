@@ -1,7 +1,19 @@
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
+
+import pytest
+
+
+pytestmark = [
+    pytest.mark.e2e,
+    pytest.mark.skipif(
+        os.getenv("GRAPHGEN_RUN_E2E") != "1",
+        reason="Set GRAPHGEN_RUN_E2E=1 to enable end-to-end generation tests.",
+    ),
+]
 
 
 def test_generate_aggregated(tmp_path: Path):
@@ -14,7 +26,7 @@ def test_generate_aggregated(tmp_path: Path):
 
     result = subprocess.run(
         [
-            "python",
+            sys.executable,
             "-m",
             "graphgen.generate",
             "--config_file",

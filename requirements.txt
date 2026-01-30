@@ -3,7 +3,6 @@ openai
 python-dotenv
 numpy
 networkx
-graspologic
 tiktoken
 pyecharts
 wikipedia

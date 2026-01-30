@@ -5,7 +5,10 @@ from graphgen.bases.datatypes import QAPair
 from graphgen.models.evaluator.base_evaluator import BaseEvaluator
 from graphgen.utils import NLTKHelper, create_event_loop, detect_main_language
 
-nltk_helper = NLTKHelper()
+try:
+    nltk_helper = NLTKHelper()
+except ModuleNotFoundError:
+    nltk_helper = None
 
 
 @dataclass
@@ -14,12 +17,16 @@ class MTLDEvaluator(BaseEvaluator):
     衡量文本词汇多样性的指标
     """
 
-    stopwords_en: Set[str] = field(
-        default_factory=lambda: set(nltk_helper.get_stopwords("english"))
-    )
-    stopwords_zh: Set[str] = field(
-        default_factory=lambda: set(nltk_helper.get_stopwords("chinese"))
-    )
+    stopwords_en: Set[str] = field(init=False, repr=False)
+    stopwords_zh: Set[str] = field(init=False, repr=False)
+
+    def __post_init__(self):
+        if nltk_helper is None:
+            raise ModuleNotFoundError(
+                "MTLDEvaluator requires nltk and jieba. Install via `pip install -r requirements.txt`."
+            )
+        self.stopwords_en = set(nltk_helper.get_stopwords("english"))
+        self.stopwords_zh = set(nltk_helper.get_stopwords("chinese"))
 
     async def evaluate_single(self, pair: QAPair) -> float:
         loop = create_event_loop()

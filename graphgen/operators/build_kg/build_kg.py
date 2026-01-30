@@ -1,7 +1,10 @@
 from collections import defaultdict
-from typing import List
+from typing import Any, List
 
-import gradio as gr
+try:
+    import gradio as gr
+except ModuleNotFoundError:
+    gr = None  # type: ignore
 
 from graphgen.bases.base_storage import BaseGraphStorage
 from graphgen.bases.datatypes import Chunk
@@ -13,7 +16,7 @@ async def build_kg(
     llm_client: OpenAIClient,
     kg_instance: BaseGraphStorage,
     chunks: List[Chunk],
-    progress_bar: gr.Progress = None,
+    progress_bar: Any = None,
 ):
     """
     :param llm_client: Synthesizer LLM model to extract entities and relationships

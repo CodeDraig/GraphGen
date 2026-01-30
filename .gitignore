@@ -177,3 +177,5 @@ cache
 *.pyc
 *.html
 .gradio
+webui_spa/node_modules/
+webui_spa/dist/

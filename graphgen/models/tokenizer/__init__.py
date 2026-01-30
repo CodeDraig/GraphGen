@@ -3,8 +3,6 @@ from typing import List
 
 from graphgen.bases import BaseTokenizer
 
-from .tiktoken_tokenizer import TiktokenTokenizer
-
 try:
     from transformers import AutoTokenizer
 
@@ -14,9 +12,21 @@ except ImportError:
 
 
 def get_tokenizer_impl(tokenizer_name: str = "cl100k_base") -> BaseTokenizer:
-    import tiktoken
+    try:
+        import tiktoken
+    except ModuleNotFoundError:
+        if _HF_AVAILABLE:
+            from .hf_tokenizer import HFTokenizer
+
+            return HFTokenizer(model_name=tokenizer_name)
+        raise ModuleNotFoundError(
+            "tiktoken is not installed and HuggingFace tokenizers are unavailable. "
+            "Install dependencies via `pip install -r requirements.txt`."
+        ) from None
 
     if tokenizer_name in tiktoken.list_encoding_names():
+        from .tiktoken_tokenizer import TiktokenTokenizer
+
         return TiktokenTokenizer(model_name=tokenizer_name)
 
     # 2. HuggingFace

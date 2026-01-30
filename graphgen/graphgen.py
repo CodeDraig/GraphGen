@@ -2,19 +2,13 @@ import asyncio
 import os
 import time
 from dataclasses import dataclass
-from typing import Dict, cast
-
-import gradio as gr
+from typing import Any, Dict, cast
 
 from graphgen.bases.base_storage import StorageNameSpace
 from graphgen.bases.datatypes import Chunk
-from graphgen.models import (
-    JsonKVStorage,
-    JsonListStorage,
-    NetworkXStorage,
-    OpenAIClient,
-    Tokenizer,
-)
+from graphgen.models.llm.openai_client import OpenAIClient
+from graphgen.models.storage import JsonKVStorage, JsonListStorage, NetworkXStorage
+from graphgen.models.tokenizer import Tokenizer
 from graphgen.operators import (
     build_kg,
     chunk_documents,
@@ -41,7 +35,7 @@ class GraphGen:
     trainee_llm_client: OpenAIClient = None
 
     # webui
-    progress_bar: gr.Progress = None
+    progress_bar: Any = None
 
     def __post_init__(self):
         self.tokenizer_instance: Tokenizer = self.tokenizer_instance or Tokenizer(
